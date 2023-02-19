@@ -52,18 +52,23 @@ class Renderer {
         // TODO: draw at least 2 Bezier curves
         //   - variable `this.num_curve_sections` should be used for `num_edges`
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
+        // Points for first curve
         let point_a = {x:  100, y:  100};
         let point_b = {x: 200, y: 400};
         let point_c = {x: 400, y: 200};
         let point_d = {x: 500, y: 500};
 
+        // Points for second curve
         let point_e = {x:  100, y:  500};
         let point_f = {x: 300, y: 500};
         let point_g = {x: 400, y: 200};
         let point_h = {x: 600, y: 100};
 
+        //Draws the curves and returns the array of points
         let point_arr = this.drawBezierCurve(point_a, point_b, point_c, point_d, this.num_curve_sections, [255, 0, 0, 255], framebuffer);
         let point_arr2 = this.drawBezierCurve(point_e, point_f, point_g, point_h, this.num_curve_sections, [255, 0, 255, 255], framebuffer);
+        
+        // Checks if points should be shown and shows them if true
         if(this.show_points) {
             for(let i = 0; i < point_arr.length; i++) {
                 this.drawVertex(point_arr[i], [0, 0, 255, 255], framebuffer);
@@ -81,10 +86,17 @@ class Renderer {
         // TODO: draw at least 2 circles
         //   - variable `this.num_curve_sections` should be used for `num_edges`
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
+        // Center for first circle
         let center = {x: 300, y: 300};
+        
+        // Center for second circle
         let center2 = {x: 400, y: 400};
+        
+        // Draws the circles and returns the array of points
         let point_arr = this.drawCircle(center, 50, this.num_curve_sections, [255, 0, 0, 255], framebuffer);
         let point_arr2 = this.drawCircle(center2, 200, this.num_curve_sections, [0, 0, 0, 255], framebuffer);
+        
+        // Checks if points should be shown and shows them if true
         if(this.show_points) {
             for(let i = 0; i < point_arr.length; i++) {
                 this.drawVertex(point_arr[i], [0, 0, 255, 255], framebuffer);
@@ -99,6 +111,7 @@ class Renderer {
     drawSlide2(framebuffer) {
         // TODO: draw at least 2 convex polygons (each with a different number of vertices >= 5)
         //   - variable `this.show_points` should be used to determine whether or not to render vertices
+        // List of points for first polygon
         let vertex_list = [];
         vertex_list.push({x: 200, y:  75});
         vertex_list.push({x: 400, y: 200});
@@ -106,6 +119,7 @@ class Renderer {
         vertex_list.push({x: 20, y: 500});
         vertex_list.push({x: 20, y: 200});
 
+        // List of points for second polygon
         let vertex_list2 = [];
         vertex_list2.push({x: 600, y:  300});
         vertex_list2.push({x: 700, y: 300});
@@ -114,9 +128,11 @@ class Renderer {
         vertex_list2.push({x: 600, y: 500});
         vertex_list2.push({x: 550, y: 400});
         
+        // Draw the polygons
         this.drawConvexPolygon(vertex_list, [255, 0, 0, 150], framebuffer);
         this.drawConvexPolygon(vertex_list2, [255, 0, 255, 150], framebuffer);
 
+        // Checks if points should be shown and shows them if true
         if(this.show_points) {
             for(let i = 0; i < vertex_list.length; i++) {
                 this.drawVertex(vertex_list[i], [0, 0, 255, 255], framebuffer);
@@ -177,12 +193,14 @@ class Renderer {
         let p14 = {x: 700, y: 100};
         let point_arr2 = this.drawBezierCurve(p11, p12, p13, p14, this.num_curve_sections, [255, 0, 0, 255], framebuffer);
 
+        // Curve for right part of M
         let p15 = {x: 700, y: 100};
         let p16 = {x: 700, y: 300};
         let p17 = {x: 790, y: 300};
         let p18 = {x: 790, y: 100};
         let point_arr3 = this.drawBezierCurve(p15, p16, p17, p18, this.num_curve_sections, [255, 0, 0, 255], framebuffer);
-
+        
+        // Checks if points should be shown and shows them if true
         if(this.show_points) {
             for(let i = 0; i < point_arr.length; i++) {
                 this.drawVertex(point_arr[i], [0, 0, 255, 255], framebuffer);
@@ -213,10 +231,11 @@ class Renderer {
     drawBezierCurve(p0, p1, p2, p3, num_edges, color, framebuffer) {
         // TODO: draw a sequence of straight lines to approximate a Bezier curve
         
-        let step = 1 / num_edges;
-        let point_arr = [];
+        let step = 1 / num_edges; 
+        let point_arr = []; //This will hold all points along curve
         let xNext, yNext, point;
         for(let t = 0; t < 1; t  = t + step) {
+            // Find x and y coordinates, then round them and add them to the array
             xNext = (Math.pow(1 - t, 3) * p0.x) + (3 * Math.pow(1 - t, 2) * t * p1.x) + (3 * (1 - t) * Math.pow(t, 2) * p2.x) + (Math.pow(t, 3) * p3.x);
             yNext = (Math.pow(1 - t, 3) * p0.y) + (3 * Math.pow(1 - t, 2) * t * p1.y) + (3 * (1 - t) * Math.pow(t, 2) * p2.y) + (Math.pow(t, 3) * p3.y);
             point = {x: parseInt(xNext), y: parseInt(yNext)};
@@ -224,9 +243,11 @@ class Renderer {
         }
         //Need this to make sure it always goes to the final point
         point_arr.push(p3);
+        // Draws the lines between points
         for(let i = 0; i < point_arr.length - 1; i++) {
             this.drawLine(point_arr[i], point_arr[i+1], color, framebuffer);
         }
+        // Returns the array so points can be labeled later 
         return point_arr;
            
     }
@@ -239,21 +260,24 @@ class Renderer {
     drawCircle(center, radius, num_edges, color, framebuffer) {
         // TODO: draw a sequence of straight lines to approximate a circle
         let step = (2 * Math.PI) / num_edges;
-        let point_arr = [];
+        let point_arr = []; //Array that points will be held in
         let xNext, yNext, point;
         for (let i = 0; i < num_edges; i++) {
+            // Finds x and y coords then rounds them and adds them to the array
             xNext = center.x + radius * Math.cos(i * step);
             yNext = center.y + radius * Math.sin(i * step);
             point = {x: parseInt(xNext), y: parseInt(yNext)};
             point_arr.push(point);
         }
 
+        //Draw the points
         for (let i = 0; i < point_arr.length; i++) {
             let p1 = point_arr[i];
             let p2 = point_arr[(i + 1) % point_arr.length];
             this.drawLine(p1, p2, color, framebuffer);
         }
 
+        // Return the array so points can be labeled later
         return point_arr;
         
     }
@@ -274,6 +298,7 @@ class Renderer {
     // framebuffer:  canvas ctx image data
     drawVertex(v, color, framebuffer) {
         // TODO: draw some symbol (e.g. small rectangle, two lines forming an X, ...) centered at position `v`
+        // Draws a small X at all points
         let point1 = {x: v.x - 5, y: v.y + 5};
         let point2 = {x: v.x + 5, y: v.y - 5};
         let point3 = {x: v.x - 5, y: v.y - 5};
